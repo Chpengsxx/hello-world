@@ -1,30 +1,34 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <div>
+    <ul>
+      <li v-for="book in books" :key="book.id">
+        {{ book.name }} - {{ book.author }}
+      </li>
+    </ul>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import request from './utils/request.js';
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  data() {
+    return {
+      books: []
+    };
+  },
+  methods: {
+    async fetchBooks() {
+      try {
+        const response = await request.get("/getAll");
+        this.books = response.data;
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    }
+  },
+  mounted() {
+    this.fetchBooks();
+  }
+};
+</script>
